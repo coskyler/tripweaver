@@ -2,7 +2,7 @@
 
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import { useRouter } from "next/navigation"
-import { auth } from "@/lib/firebase"
+import { auth } from "../../lib/firebase"
 
 export default function GoogleLoginButton() {
   const router = useRouter()
@@ -11,7 +11,7 @@ export default function GoogleLoginButton() {
     try {
       const provider = new GoogleAuthProvider()
       await signInWithPopup(auth, provider)
-      router.push("/dashboard")
+      router.push("/trips")
     } catch (err) {
       console.error(err)
     }
