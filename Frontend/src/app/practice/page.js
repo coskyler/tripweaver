@@ -1,13 +1,12 @@
 "use client"
-import React, {useState, useEffect} from 'react';
-import Header from '../../components/sections/header';
-import ProgressSection from '../../components/sections/progressSection'
-import Map from '../../components/map-related/map'
-import DestinationCard from '../../components/sections/Destination';
 
+import Map from "../../components/map-related/map";
+import DestinationCard from "../../components/sections/Destination"
+import React, {useState} from 'react';
 
-function page() {
-  const [currentStep, setCurrentStep] = useState(0);
+// Demo component showing usage
+const DestinationCardDemo = () => {
+
   const sampleDestinations = [
     {
       id: 1,
@@ -62,49 +61,56 @@ function page() {
     }
   ];
 
-  // Simulate progress
-  useEffect(() => {
-    const stepInterval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev < 6) {
-          return prev + 1;
-        }
-        return prev;
-      });
-    }, 2000);
-
-    return () => {
-      clearInterval(stepInterval);
-    };
-  }, []);
-
   return (
-    <>
-    <div className="flex">
-        <div className="w-1/3">
-            <ProgressSection 
-            currentStep={currentStep} />
-            {sampleDestinations.map((destination, index) => (
-              <div key={destination.id} className="relative p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-8">
+      <div className="max-w-6xl mx-auto">
+
+
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column - Destination Cards */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                {sampleDestinations.length}
+              </span>
+              Tour Stops
+            </h2>
+            
+            {sampleDestinations.map((name, destination, index) => (
+              <div key={destination.id} className="relative">
                 {/* Stop Number Badge */}
+                <div className="absolute -left-3 top-4 bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg z-10">
                   {index + 1}
+                </div>
                 <DestinationCard
                   {...destination}
+                  onClick={() => setActiveCard(destination.id)}
                 />
               </div>
             ))}
+          </div>
 
-
-        </div>
-
-        <div className="w-2/3">
+          {/* Right Column - Map Placeholder */}
             <Map>
-
             </Map>
         </div>
-    </div>
-    </>
-  )
-}
 
-export default page
+        {/* Tour Summary */}
+        <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border-2 border-green-200">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">Miami Beach Explorer Tour</h3>
+              <p className="text-sm text-gray-600">Walking tour • 3.2 miles • ~2.5 hours</p>
+            </div>
+            <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+              Start Tour
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DestinationCardDemo;
