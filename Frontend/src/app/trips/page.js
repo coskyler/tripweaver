@@ -80,8 +80,8 @@ function page() {
 
   return (
     <>
-    <div className="flex">
-        <div className="w-1/3">
+    <div className="flex h-screen">
+        <div className="w-1/3 overflow-y-auto">
             <ProgressSection 
             currentStep={currentStep} />
             {sampleDestinations.map((destination, index) => (
@@ -93,13 +93,10 @@ function page() {
                 />
               </div>
             ))}
-
-
         </div>
 
-        <div className="w-2/3">
+        <div className="w-2/3 h-screen overflow-hidden">
             <Map>
-
             </Map>
         </div>
     </div>
