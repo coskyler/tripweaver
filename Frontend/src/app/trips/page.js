@@ -5,19 +5,48 @@ import Header from "../../components/sections/header";
 import Footer from "../../components/sections/footer";
 import PlaceAutocomplete from "../../components/map-related/PlaceAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { useRouter } from "next/navigation"
 
 export default function Home() {
 
   const [formData, setFormData] = useState({
     prompt: "",
-    startingCoords: { lat: 0, long: 0 },
-    targetCoords: { lat: 0, long: 0 },
+    startingCoords: { lat: 0, lng: 0 },
+    targetCoords: { lat: 0, lng: 0 },
     transportationMethod: "walking",
     searchRadius: "",
     tourBudget: "",
     city: "",
   });
 
+  const router = useRouter()
+
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("/tour", {
+        userPrompt: formData.prompt,
+        startingCoords: formData.startingCoords,
+        targetCoords: formData.targetCoords,
+        budget: formData.tourBudget,
+        transportationMethod: formData.transportationMethod,
+        searchRadius: formData.searchRadius,
+        city: formData.city,
+      });
+      console.log("Job ID:", response.data.jobId);
+
+    } catch (error) {
+      console.error("Error creating tour:", error);
+    } finally {
+      router.push(`/trips/${response.data.jobId}`)
+    }
+  };
+
+
+/*
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -35,7 +64,7 @@ export default function Home() {
     console.log("Job ID:", data.jobId);
 
     // TODO: Navigate to results page or show loading state
-  };
+  };*/
 
 const handleStartSelect = (place) => {
   console.log("startplace", place);
@@ -86,7 +115,8 @@ const handleDestinationSelect = (place) => {
             </h2>
           </div>
 
-          {/* Main Search Form - Centered in Hero */}
+          {/* Main Search Form
+           - Centered in Hero */}
           <div className="">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Natural Language Input - PRIMARY INPUT */}

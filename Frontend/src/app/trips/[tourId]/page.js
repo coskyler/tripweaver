@@ -6,6 +6,8 @@ import Map from '../../../components/map-related/map'
 import DestinationCard from '../../../components/sections/Destination';
 
 
+
+
 function page() {
   const [currentStep, setCurrentStep] = useState(0);
   const sampleDestinations = [
@@ -86,7 +88,7 @@ function page() {
     <Header/>
     <div className="flex h-screen">
         <div className="w-1/2 overflow-y-auto pt-8">
-{/*
+            {/*
             <ProgressSection 
             currentStep={currentStep} /> */}
             {sampleDestinations.map((destination) => (
