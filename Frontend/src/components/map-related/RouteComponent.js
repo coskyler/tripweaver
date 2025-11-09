@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useMap } from '@vis.gl/react-google-maps';
 
-function RouteComponent({ origin, destination }) {
+function RouteComponent({ origin, destination, onRouteCalculated }) {
   const map = useMap();
 
   useEffect(() => {
@@ -29,11 +29,22 @@ function RouteComponent({ origin, destination }) {
         if (status === 'OK') {
           directionsRenderer.setDirections(result);
           
-          // Optional: Get route info
+          // Get route info
           const route = result.routes[0];
           const leg = route.legs[0];
+          
           console.log('Distance:', leg.distance.text);
           console.log('Duration:', leg.duration.text);
+          
+          // Call the callback with route info
+          if (onRouteCalculated) {
+            onRouteCalculated({
+              duration: leg.duration.text,        // e.g., "3 hours 30 mins"
+              distance: leg.distance.text,        // e.g., "235 mi"
+              durationValue: leg.duration.value,  // in seconds
+              distanceValue: leg.distance.value   // in meters
+            });
+          }
         } else {
           console.error('Directions request failed:', status);
         }
@@ -43,7 +54,7 @@ function RouteComponent({ origin, destination }) {
     return () => {
       directionsRenderer.setMap(null);
     };
-  }, [map, origin, destination]);
+  }, [map, origin, destination, onRouteCalculated]);
 
   return null;
 }

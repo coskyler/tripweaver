@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Header from '../../../components/sections/header';
-import ProgressSection from '../../../components/sections/progressSection'
 import Map from '../../../components/map-related/map'
 import DestinationCard from '../../../components/sections/Destination';
 import { AdvancedMarker, Pin, APIProvider } from '@vis.gl/react-google-maps';
@@ -25,7 +24,9 @@ import { useParams } from 'next/navigation';
 import { auth } from "../../../lib/firebase";
 
 function Page() {
-  const [currentStep, setCurrentStep] = useState(0);
+  {/*
+  // State to store route durations
+  const [routeDurations, setRouteDurations] = useState({});
   const [destinations, setDestinations] = useState([]);
   const { tourId } = useParams();
   useEffect(() => {
@@ -50,6 +51,7 @@ function Page() {
 
     fetchData();
   }, [tourId]);
+  */}
 
 
 
@@ -91,6 +93,41 @@ function Page() {
           <div className="absolute inset-0">
             <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
               <Map />
+                {sampleDestinations.map((destination, index) => (
+                  <React.Fragment key={destination.id}>
+                    {/* Render route from current to next destination */}
+                    {index < sampleDestinations.length - 1 && (
+                      <RouteComponent 
+                        origin={{ lat: destination.lat, lng: destination.lng }} 
+                        destination={{ 
+                          lat: sampleDestinations[index + 1].lat, 
+                          lng: sampleDestinations[index + 1].lng 
+                        }}
+                        onRouteCalculated={(routeInfo) => {
+                          setRouteDurations(prev => ({
+                            ...prev,
+                            [`${destination.id}-${sampleDestinations[index + 1].id}`]: routeInfo
+                          }));
+                        }}
+                      />
+                    )}
+                    
+                    {/* Render marker at each destination with ID */}
+                    <AdvancedMarker position={{ lat: destination.lat, lng: destination.lng }}>
+                      <Pin 
+                        {...getPinColor(index, sampleDestinations.length)}
+                        glyph={destination.id.toString()}
+                      />
+                    </AdvancedMarker>
+                  </React.Fragment>
+                ))}
+
+                {/* Display route durations somewhere */}
+                {Object.entries(routeDurations).map(([key, info]) => (
+                  <div key={key}>
+                    Route {key}: {info.duration} ({info.distance})
+                  </div>
+                ))}
             </APIProvider>
           </div>
 
