@@ -18,7 +18,7 @@ export default async function askPlaces(types, startingCoords, targetCoords) {
         radius: 2000,
       },
     },
-    maxResultCount: 20,
+    maxResultCount: 10,
   };
 
   const headers = {
@@ -66,5 +66,18 @@ export default async function askPlaces(types, startingCoords, targetCoords) {
     }
   }
 
-  return deduped;
+  //remove redundant information
+  const simplified = deduped.map(place => ({
+    name: place.displayName?.text ?? "Untitled Location",
+    types: place.types ?? null,
+    formattedAddress: place.formattedAddress ?? null,
+    editorialSummary: place.editorialSummary?.text ?? null,
+    generativeSummary: place.generativeSummary?.overview.text ?? null,
+    reviewSummary: place.reviewSummary?.text.text ?? null,
+    rating: place.rating ?? "Unspecified",
+    priceLevel: place.priceLevel ?? "PRICE_LEVEL_UNSPECIFIED",
+  }));
+
+
+  return simplified;
 }

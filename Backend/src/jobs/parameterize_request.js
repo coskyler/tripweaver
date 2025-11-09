@@ -1,9 +1,6 @@
-import { GoogleGenAI } from "@google/genai";
+import ai from "../infra/gemini.js"
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-
-export default async function askGemini(userPrompt) {
+export default async function askGeminiToParameterize(userPrompt) {
   const prompt = `
 You are given a list of Google Maps Place Types. Based on the user's request, select the types that best match the intent.
 
