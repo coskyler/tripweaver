@@ -11,7 +11,7 @@ export default function GoogleLoginButton() {
     try {
       const provider = new GoogleAuthProvider()
       await signInWithPopup(auth, provider)
-      router.push("/trips")
+      router.push("/tours")
     } catch (err) {
       console.error(err)
     }

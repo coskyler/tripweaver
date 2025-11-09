@@ -25,7 +25,7 @@ export default function Header() {
           </svg>
 
 
-          <h1 className="text-2xl font-bold text-black">TourWeaver</h1>
+          <h1 className="text-2xl font-bold text-black">Tourweaver</h1>
         </div>
 
         {/* Right-side actions */}

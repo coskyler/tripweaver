@@ -22,6 +22,7 @@ const getPinColor = (index, totalCount) => {
 };
 
 function Page() {
+  const [routeDurations, setRouteDurations] = useState({});
   const [destinations, setDestinations] = useState([]);
   const { tourId } = useParams();
 
@@ -46,7 +47,7 @@ function Page() {
   }, [tourId]);
 
   // Pull tour title/description from the response (attached to each row)
-  const tourTitle = destinations[0]?.tourName ?? "Tour";
+  const tourTitle = destinations[0]?.tourName ?? "Curating your tour...";
   const tourDescription = destinations[0]?.tourDescription ?? "";
 
   return (
@@ -55,7 +56,7 @@ function Page() {
 
       <div className="flex flex-1 min-h-0 min-w-0">
         {/* Left pane: scrolls internally */}
-        <div className="flex flex-col min-w-0 min-h-0 overflow-auto pt-8 px-4 max-w-150">
+        <div className="flex flex-col min-w-0 min-h-0 overflow-auto pt-8 px-4 w-full max-w-150">
           {/* Title + description */}
           <div className="mb-8 px-6 py-4 bg-white rounded-2xl">
             <h1 className="text-3xl font-semibold text-gray-900 mb-2 tracking-tight">
@@ -88,7 +89,40 @@ function Page() {
         <div className="flex-1 min-w-0 relative">
           <div className="absolute inset-0">
             <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
-              <Map />
+              <Map mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+                {destinations.map((destination, index) => (
+                  <React.Fragment key={destination.seq}>
+                    {index < destinations.length - 1 && (
+                      <RouteComponent 
+                        origin={{ lat: destination.lat, lng: destination.lng }} 
+                        destination={{ 
+                          lat: destinations[index + 1].lat, 
+                          lng: destinations[index + 1].lng 
+                        }}
+                        onRouteCalculated={(routeInfo) => {
+                          setRouteDurations(prev => ({
+                            ...prev,
+                            [`${destination.seq}-${destinations[index + 1].seq}`]: routeInfo
+                          }));
+                        }}
+                      />
+                    )}
+
+                    <AdvancedMarker position={{ lat: destination.lat, lng: destination.lng }}>
+                      <Pin 
+                        {...getPinColor(index, destinations.length)}
+                        glyph={destination.seq.toString()}
+                      />
+                    </AdvancedMarker>
+                  </React.Fragment>
+                ))}
+
+                {Object.entries(routeDurations).map(([key, info]) => (
+                  <div key={key}>
+                    Route {key}: {info.duration} ({info.distance})
+                  </div>
+                ))}
+                </Map>
             </APIProvider>
           </div>
         </div>

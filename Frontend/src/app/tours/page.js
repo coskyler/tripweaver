@@ -61,7 +61,7 @@ export default function Home() {
         },
       });
 
-      router.push(`/trips/${data.id}`);
+      router.push(`/tours/${data.id}`);
     } catch (err) {
       console.error(err);
       alert(err?.response?.data?.error || err.message || "Failed to create tour");

@@ -43,7 +43,7 @@ export default function featurelist() {
     <section className="py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <h3 className="text-3xl font-bold text-center text-black mb-12">
-          Why Choose TripWeaver?
+          Why Choose Tourweaver?
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
