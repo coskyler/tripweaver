@@ -79,9 +79,7 @@ const DestinationCardDemo = () => {
             
             {sampleDestinations.map((name, destination, index) => (
               <div key={destination.id} className="relative">
-                {/* Stop Number Badge */}
                 <div className="absolute -left-3 top-4 bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg z-10">
-                  {index + 1}
                 </div>
                 <DestinationCard
                   {...destination}
