@@ -8,8 +8,8 @@ export default function DestinationCard({
   description = "Default String",
   rating = 0,
   priceLevel = 0,
-  distance = 0,
-  duration = 0,
+  distance = Math.floor(Math.random() * 12) + 1,
+  duration = (Math.floor(Math.random() * 3) + 2) * 4,
 }) {
   const renderPriceSymbols = () => {
     const symbols = [];

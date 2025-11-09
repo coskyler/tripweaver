@@ -179,7 +179,7 @@ router.post("/", async (req, res) => {
           const s = finalists[i];
 
           const description =
-            s.editorialSummary || s.generativeSummary || s.reviewSummary || null;
+            s.editorialSummary || s.generativeSummary || s.reviewSummary || "No description listed";
 
           const priceLevel = priceMap[s.priceLevel] ?? 0;
 

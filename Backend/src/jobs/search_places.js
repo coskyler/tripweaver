@@ -15,7 +15,7 @@ export default async function askPlaces(types, startingCoords, targetCoords) {
     locationRestriction: {
       circle: {
         center: { latitude: midpoint.lat, longitude: midpoint.lng },
-        radius: 2000,
+        radius: 3000,
       },
     },
     maxResultCount: 10,
