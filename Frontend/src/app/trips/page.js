@@ -1,112 +1,273 @@
-"use client"
-import React, {useState, useEffect} from 'react';
-import Header from '../../components/sections/header';
-import ProgressSection from '../../components/sections/progressSection'
-import Map from '../../components/map-related/map'
-import DestinationCard from '../../components/sections/Destination';
+"use client";
 
+import { useState } from "react";
+import Header from "../../components/sections/header";
+import Footer from "../../components/sections/footer";
+import PlaceAutocomplete from "../../components/map-related/PlaceAutocomplete";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
-function page() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const sampleDestinations = [
-    {
-      id: 1,
-      name: "The Wharf Marina",
-      address: "401 Biscayne Blvd, Miami, FL 33132",
-      description: "Scenic waterfront destination perfect for evening strolls and sunset views. Features multiple dining options and boat tours.",
-      rating: 4.7,
-      reviewCount: 342,
-      priceLevel: 2,
-      category: "Attraction",
-      estimatedTime: "30 min",
-      distance: "0.3 mi",
-      imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop"
-    },
-    {
-      id: 2,
-      name: "Café Lumière",
-      address: "1250 Collins Ave, Miami Beach, FL 33139",
-      description: "Charming French-inspired café serving artisanal pastries and specialty coffee in a cozy atmosphere.",
-      rating: 4.5,
-      reviewCount: 189,
-      priceLevel: 2,
-      category: "Restaurant",
-      estimatedTime: "20 min",
-      distance: "0.8 mi",
-      imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop"
-    },
-    {
-      id: 3,
-      name: "Ocean View Park",
-      address: "500 Ocean Drive, Miami Beach, FL 33139",
-      description: "Beautiful beachside park with walking trails, picnic areas, and stunning ocean panoramas. Great for relaxation and photography.",
-      rating: 4.8,
-      reviewCount: 521,
-      priceLevel: 1,
-      category: "Park",
-      estimatedTime: "45 min",
-      distance: "1.2 mi",
-      imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop"
-    },
-    {
-      id: 4,
-      name: "Artisan Market Square",
-      address: "789 Lincoln Road, Miami Beach, FL 33139",
-      description: "Vibrant marketplace featuring local artisans, handcrafted goods, and live entertainment every weekend.",
-      rating: 4.4,
-      reviewCount: 267,
-      priceLevel: 2,
-      category: "Shopping",
-      estimatedTime: "40 min",
-      distance: "0.6 mi",
-      imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop"
-    }
-  ];
+export default function Home() {
+  const [startPlace, setStartPlace] = useState(null);
+  const [destinationPlace, setDestinationPlace] = useState(null);
+  const [formData, setFormData] = useState({
+    prompt: "",
+    startingCoords: { lat: 0, long: 0 },
+    targetCoords: { lat: 0, long: 0 },
+    transportationMethod: "walking",
+    tourMinutes: "",
+    tourBudget: "",
+  });
 
-  // Simulate progress
-  /*
-  useEffect(() => {
-    const stepInterval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev < 6) {
-          return prev + 1;
-        }
-        return prev;
-      });
-    }, 2000);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    return () => {
-      clearInterval(stepInterval);
-    };
-  }, []);
-  */
+    // TODO: Send to backend API
+    const response = await fetch("/api/create-tour", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    console.log("Job ID:", data.jobId);
+
+    // TODO: Navigate to results page or show loading state
+  };
+
+  const handleStartSelect = (place) => {
+    setStartPlace(place);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      startingCoords: {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      },
+    }));
+  };
+
+  const handleDestinationSelect = (place) => {
+    setDestinationPlace(place);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      destinationCoords: {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      },
+    }));
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
-    <>
-    <Header/>
-    <div className="flex h-screen">
-        <div className="w-1/2 overflow-y-auto pt-8">
-{/*
-            <ProgressSection 
-            currentStep={currentStep} /> */}
-            {sampleDestinations.map((destination) => (
-              <div key={destination.id} className="relative px-6 py-1">
-                <DestinationCard
-                  number={destination.id}
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <Header />
 
-                  {...destination}
+      {/* Hero Section with Centered Form */}
+      <section className="relative min-h-[700px] flex items-center justify-center overflow-hidden py-12">
+        {/* Background Image Placeholder - Replace with actual image */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-green-100"></div>
+
+        {/* Overlay Content */}
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-5xl font-bold text-black mb-4">
+              Design Your Tour
+            </h2>
+          </div>
+
+          {/* Main Search Form - Centered in Hero */}
+          <div className="">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Natural Language Input - PRIMARY INPUT */}
+              <div className="text-left">
+                <textarea
+                  id="prompt"
+                  name="prompt"
+                  value={formData.prompt}
+                  onChange={handleChange}
+                  placeholder="Show me historic landmarks and coffee shops in downtown, family-friendly activities"
+                  className="w-full px-4 py-3 bg-whiterounded-lg bg-white focus:border-green-600 focus:outline-none text-black resize-none"
+                  rows={3}
+                  required
                 />
               </div>
-            ))}
-        </div>
 
-        <div className="w-2/3 h-screen overflow-hidden">
-            <Map>
-            </Map>
+              {/* Grid Layout for Other Inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Start Location */}
+                <div className="text-left">
+                  <label
+                    htmlFor="startCoords"
+                    className="block text-sm font-semibold text-black mb-2"
+                  >
+                    Starting Location
+                  </label>
+                  <APIProvider
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                  >
+                    <PlaceAutocomplete
+                      type="text"
+                      value={startPlace}
+                      onPlaceSelect={handleStartSelect}
+                      placeholder="Starting point"
+                      className="w-full bg-white px-4 py-3  rounded-xl focus:border-green-500 focus:outline-none text-gray-800 placeholder:text-gray-400"
+                      required
+                    />
+                  </APIProvider>
+                </div>
+
+                {/* Target Location (Optional) */}
+                <div className="text-left">
+                  <label
+                    htmlFor="targetCoords"
+                    className="block text-sm font-semibold text-black mb-2"
+                  >
+                    Ending Location{" "}
+                    <span className="text-gray-400 font-normal">
+                      (Optional)
+                    </span>
+                  </label>
+                  <APIProvider
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                  >
+                    <PlaceAutocomplete
+                      type="text"
+                      value={startPlace}
+                      onPlaceSelect={handleDestinationSelect}
+                      placeholder="Round Trip or Destination"
+                      className="w-full bg-white px-4 py-3 rounded-xl focus:border-green-500 focus:outline-none text-gray-800 placeholder:text-gray-400"
+                      required
+                    />
+                  </APIProvider>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3">
+                {/* Trip Length */}
+                <div className="text-left mr-5">
+                  <label
+                    htmlFor="tourMinutes"
+                    className="block text-sm font-semibold text-black  mb-5 tracking-wide"
+                  >
+                    Trip Length Miles:{" "}
+                    <span className="text-green-600 font-bold">
+                      {formData.tourMinutes || 5}
+                    </span>
+                  </label>
+                  <input
+                    type="range"
+                    id="tourMinutes"
+                    name="tourMinutes"
+                    value={formData.tourMinutes}
+                    onChange={handleChange}
+                    min="3"
+                    max="200"
+                    step="1"
+                    className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
+                    required
+                  />
+                </div>
+
+                {/* Tour Type 
+                <div className="text-left">
+                  <label
+                    htmlFor="transportationMethod"
+                    className="block text-sm font-semibold text-black mb-2"
+                  >
+                    Tour Type
+                  </label>
+                  <select
+                    id="transportationMethod"
+                    name="transportationMethod"
+                    value={formData.transportationMethod}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-black rounded-lg focus:border-green-600 focus:outline-none text-black bg-white"
+                    required
+                  >
+                    <option value="walking">Walking Tour</option>
+                    <option value="driving">Driving Tour</option>
+                  </select>
+                </div>
+                */}
+
+                {/* Tour Type Toggle */}
+                <div className="text-center">
+                  <label className="block text-sm font-semibold text-black mb-3 tracking-wide">
+                    Tour Type
+                  </label>
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, transportationMethod: 'walking'})}
+                      className={`flex-1 px-4 py-2 rounded-md font-medium transition-all ${
+                        formData.transportationMethod === 'walking'
+                          ? 'bg-green-300 text-black shadow-md'
+                          : 'bg-transparent text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      🚶 Walking
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, transportationMethod: 'driving'})}
+                      className={`flex-1 px-4 py-2 rounded-md font-medium transition-all ${
+                        formData.transportationMethod === 'driving'
+                          ? 'bg-green-300 text-black shadow-md'
+                          : 'bg-transparent text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      🚗 Driving
+                    </button>
+                  </div>
+                </div>
+
+                {/* Budget */}
+                <div className="text-left ml-5">
+                  <label
+                    htmlFor="tourBudget"
+                    className="block text-sm font-semibold text-black  mb-5 tracking-wide"
+                  >
+                    Budget:{" "}
+                    <span className="text-green-600 font-bold text-lg">
+                      {"$".repeat(formData.tourBudget || 1)}
+                    </span>
+                  </label>
+                  <input
+                    type="range"
+                    id="tourBudget"
+                    name="tourBudget"
+                    value={formData.tourBudget}
+                    onChange={handleChange}
+                    min="0"
+                    max="4"
+                    step="1"
+                    className="w-full h-3 items-end bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 rounded-lg transition-colors duration-200 text-lg"
+              >
+                Generate My Tour
+              </button>
+            </form>
+          </div>
         </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
-    </>
-  )
+  );
 }
-
-export default page
