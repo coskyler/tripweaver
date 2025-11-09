@@ -76,6 +76,10 @@ export default async function askPlaces(types, startingCoords, targetCoords) {
     reviewSummary: place.reviewSummary?.text.text ?? null,
     rating: place.rating ?? "Unspecified",
     priceLevel: place.priceLevel ?? "PRICE_LEVEL_UNSPECIFIED",
+    lat: place.location?.latitude ?? null,
+    lng: place.location?.longitude ?? null,
+    url: place.name ? `https://www.google.com/maps/place/?q=place_id:${place.name.split('/').pop()}` : null,
+
   }));
 
 

@@ -10,7 +10,7 @@ const priceMap = {
 };
 
 export default async function askGeminiToFilter(userPrompt, places, budget) {
-  //remove null fields and filter by price before prompting
+  //remove null and unhelpful fields and filter by price before prompting
   const readable = places
     .filter(place => {
       const level = priceMap[place.priceLevel] ?? 0;
@@ -18,7 +18,10 @@ export default async function askGeminiToFilter(userPrompt, places, budget) {
     })
     .map((place, index) => {
       const cleaned = Object.fromEntries(
-        Object.entries(place).filter(([key, value]) => key !== "priceLevel" && value != null)
+        Object.entries(place).filter(
+          ([key, value]) =>
+            !["priceLevel", "lng", "lat", "url"].includes(key) && value != null
+        )
       );
       return { ...cleaned, index };
     });
