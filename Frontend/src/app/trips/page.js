@@ -7,8 +7,10 @@ import PlaceAutocomplete from "../../components/map-related/PlaceAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import TourList from '../../components/TourList'
 
 export default function Home() {
+  
 
   const [formData, setFormData] = useState({
     prompt: "",
@@ -22,9 +24,23 @@ export default function Home() {
 
   const router = useRouter()
 
+  {/* still working
+  useEffect( () => {
+      const fetchTours = async () => {
+    try {
+      const ownerId = "some-user-id"; // Replace with actual user ID
+      const response = await axios.get(`http://localhost:8085/tours?owner=${ownerId}`);
+      setTours(response.data);
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+    } finally {
+      setLoading(false);
+    }
+  })
+    */
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // This is a placeholder. You'll need to get the actual logged-in user's ID.
     const ownerId = "some-user-id";
 
