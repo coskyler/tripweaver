@@ -87,8 +87,10 @@ router.get("/:tourId", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { userPrompt, startingCoords, targetCoords, budget, transportationMethod, searchRadius, city, owner } = req.body;
-  //const owner = req.uid;
+  const { userPrompt, startingCoords, targetCoords, budget, transportationMethod, searchRadius, city } = req.body;
+  const owner = req.uid;
+
+  console.log(req.body);
 
   //generate tour name
   try {
