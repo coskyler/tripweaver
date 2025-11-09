@@ -4,7 +4,7 @@ import Header from '../../../components/sections/header';
 import ProgressSection from '../../../components/sections/progressSection'
 import Map from '../../../components/map-related/map'
 import DestinationCard from '../../../components/sections/Destination';
-import { AdvancedMarker, Pin, APIProvider} from '@vis.gl/react-google-maps';
+import { AdvancedMarker, Pin, APIProvider } from '@vis.gl/react-google-maps';
 import RouteComponent from "../../../components/map-related/RouteComponent";
 
 // Helper function to get pin colors based on position
@@ -87,9 +87,13 @@ function Page() {
 
         {/* Right pane: map */}
         <div className="flex-1 min-w-0 relative">
+
           <div className="absolute inset-0">
-            <Map />
+            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+              <Map />
+            </APIProvider>
           </div>
+
         </div>
       </div>
     </div>
