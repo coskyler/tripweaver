@@ -84,11 +84,11 @@ function page() {
         <div className="w-1/3 overflow-y-auto">
             <ProgressSection 
             currentStep={currentStep} />
-            {sampleDestinations.map((destination, index) => (
+            {sampleDestinations.map((destination) => (
               <div key={destination.id} className="relative p-6">
-                {/* Stop Number Badge */}
-                  {index + 1}
                 <DestinationCard
+                  number={destination.id}
+
                   {...destination}
                 />
               </div>
