@@ -64,6 +64,7 @@ function page() {
   ];
 
   // Simulate progress
+  /*
   useEffect(() => {
     const stepInterval = setInterval(() => {
       setCurrentStep(prev => {
@@ -78,16 +79,18 @@ function page() {
       clearInterval(stepInterval);
     };
   }, []);
+  */
 
   return (
     <>
+    <Header/>
     <div className="flex h-screen">
-        <div className="w-1/2 overflow-y-auto">
-
+        <div className="w-1/2 overflow-y-auto pt-8">
+{/*
             <ProgressSection 
-            currentStep={currentStep} />
+            currentStep={currentStep} /> */}
             {sampleDestinations.map((destination) => (
-              <div key={destination.id} className="relative p-6">
+              <div key={destination.id} className="relative px-6 py-1">
                 <DestinationCard
                   number={destination.id}
 

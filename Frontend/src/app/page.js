@@ -9,7 +9,7 @@ export default function Home() {
   const [formData, setFormData] = useState({
     prompt: '',
     startingCoords: {lat: 0, long: 0},
-    targetCoords: {lat:0, long:0},
+    targetCoords: {lat: 0, long: 0},
     transportationMethod: 'walking',
     tourMinutes: '', 
   });

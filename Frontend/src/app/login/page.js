@@ -11,7 +11,7 @@ export default function Home() {
       <Header/>
     <div className="flex flex-col items-center justify-center pt-40 h-[75%] text-center bg-gradient-to-b from-cream-50 to-white text-gray-800">
       <h1 className="text-5xl font-semibold mb-4">Tripweaver</h1>
-      <p className="text-lg text-gray-600 max-w-md">
+      <p className="text-lg text-gray-600 max-w-md pb-5">
         Plan, personalize, and explore your journeys effortlessly — powered by AI.
       </p>
       <GoogleLoginButton />
