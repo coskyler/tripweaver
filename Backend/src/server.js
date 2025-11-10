@@ -2,9 +2,7 @@ import express from "express";
 import cors from "cors";
 import admin from "firebase-admin";
 import tripRouter from "./routes/trip.js";
-import { createRequire } from "module";
 
-const require = createRequire(import.meta.url);
 const serviceAccount = require("./infra/serviceAccountKey.json");
 
 admin.initializeApp({
@@ -13,15 +11,23 @@ admin.initializeApp({
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ["https://tourweaver.coskyler.com", "http://localhost:3000"],
-  })
-);
+const corsConfig = {
+  origin: "https://tourweaver.coskyler.com",
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"],
+  credentials: true
+};
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig)); // <-- reuse same config
+
+
 app.use(express.json());
 
 // verify auth via firebase
 app.use(async (req, res, next) => {
+  if (req.method === "OPTIONS") return res.sendStatus(204); //skip OPTIONS requests
+
+
   const header = req.headers.authorization || "";
   const match = header.match(/^Bearer (.+)$/);
 
