@@ -30,42 +30,35 @@ function Page() {
   const [tourDescription, setTourDescription] = useState("");
   const { tourId } = useParams();
 
-  useEffect(() => {
-    let timeout = null;
+useEffect(() => {
+  let timeout = null;
 
-    const fetchData = async () => {
-      let user = auth.currentUser;
-      while (!user) {
-        await new Promise((r) => setTimeout(r, 100));
-        user = auth.currentUser;
-      }
+  const fetchData = async () => {
+    const base = process.env.NEXT_PUBLIC_API_DOMAIN;
 
-      const token = await user.getIdToken();
-      const base = process.env.NEXT_PUBLIC_API_DOMAIN;
-      const res = await axios.get(`${base}/tours/${tourId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const res = await axios.get(`${base}/tours/${tourId}`);
+    const data = res.data;
 
-      const data = res.data;
-      console.log(data);
+    console.log(data);
 
-      setTourTitle(data.tourName || "Curating your tour...");
-      setTourStatus(data.status || "failed");
-      setTourDescription(data.tourDescription || "");
-      setDestinations(data.stops || []);
+    setTourTitle(data.tourName || "Curating your tour...");
+    setTourStatus(data.status || "failed");
+    setTourDescription(data.tourDescription || "");
+    setDestinations(data.stops || []);
 
-      //retry every 5 seconds while generating
-      if (data.status === "generating") {
-        timeout = setTimeout(fetchData, 6000);
-      }
-    };
+    // retry every 6s while generating
+    if (data.status === "generating") {
+      timeout = setTimeout(fetchData, 6000);
+    }
+  };
 
-    fetchData();
+  fetchData();
 
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [tourId]);
+  return () => {
+    if (timeout) clearTimeout(timeout);
+  };
+}, [tourId]);
+
 
 
   return (
