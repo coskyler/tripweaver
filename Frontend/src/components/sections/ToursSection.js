@@ -64,7 +64,7 @@ export default function ToursSection({
     return (
         <section className={`w-full ${className}`}>
             <div className="mb-8 text-center">
-                <h2 className="text-3xl font-bold text-green-700">Your Tours</h2>
+                <h2 className="text-3xl font-bold text-green-900">Your Tours</h2>
                 <p className="mt-2 text-gray-600">
                     Explore your saved journeys and relive your favorite routes.
                 </p>

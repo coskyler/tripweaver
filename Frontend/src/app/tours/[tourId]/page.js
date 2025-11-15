@@ -9,6 +9,7 @@ import RouteComponent from "../../../components/map-related/RouteComponent";
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { auth } from "../../../lib/firebase";
+import LoadingTour from '../../../components/sections/LoadingTour';
 
 // Helper function to get pin colors based on position
 const getPinColor = (index, totalCount) => {
@@ -24,9 +25,14 @@ const getPinColor = (index, totalCount) => {
 function Page() {
   const [routeDurations, setRouteDurations] = useState({});
   const [destinations, setDestinations] = useState([]);
+  const [tourStatus, setTourStatus] = useState("loading");
+  const [tourTitle, setTourTitle] = useState("");
+  const [tourDescription, setTourDescription] = useState("");
   const { tourId } = useParams();
 
   useEffect(() => {
+    let timeout = null;
+
     const fetchData = async () => {
       let user = auth.currentUser;
       while (!user) {
@@ -39,32 +45,48 @@ function Page() {
       const res = await axios.get(`${base}/tours/${tourId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(res.data);
-      setDestinations(res.data || []);
+
+      const data = res.data;
+      console.log(data);
+
+      setTourTitle(data.tourName || "Curating your tour...");
+      setTourStatus(data.status || "failed");
+      setTourDescription(data.tourDescription || "");
+      setDestinations(data.stops || []);
+
+      //retry every 5 seconds while generating
+      if (data.status === "generating") {
+        timeout = setTimeout(fetchData, 6000);
+      }
     };
 
     fetchData();
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
   }, [tourId]);
 
-  // Pull tour title/description from the response (attached to each row)
-  const tourTitle = destinations[0]?.tourName ?? "Curating your tour...";
-  const tourDescription = destinations[0]?.tourDescription ?? "";
 
   return (
-    <div className="flex h-dvh min-h-0 min-w-0 flex-col">
+    <div className="flex h-dvh min-h-0 min-w-0 flex-col bg-[#FFF7E6]">
       <Header className="shrink-0" />
 
       <div className="flex flex-1 min-h-0 min-w-0">
         {/* Left pane: scrolls internally */}
         <div className="flex flex-col min-w-0 min-h-0 overflow-auto pt-8 px-4 w-full max-w-150">
           {/* Title + description */}
-          <div className="mb-8 px-6 py-4 bg-white rounded-2xl">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2 tracking-tight">
+          <div className="mb-8 px-6 py-4">
+            <h1 className="text-3xl font-semibold text-green-900 mb-2 tracking-tight">
               {tourTitle}
             </h1>
-            <p className="text-gray-700 text-sm leading-relaxed">
-              {tourDescription}
-            </p>
+            {tourStatus !== "complete" && tourStatus !== "loading" ? (
+              <LoadingTour />
+            ) : (
+              <p className="text-black text-sm leading-relaxed">
+                {tourDescription}
+              </p>
+            )}
           </div>
 
 
@@ -93,11 +115,11 @@ function Page() {
                 {destinations.map((destination, index) => (
                   <React.Fragment key={destination.seq}>
                     {index < destinations.length - 1 && (
-                      <RouteComponent 
-                        origin={{ lat: destination.lat, lng: destination.lng }} 
-                        destination={{ 
-                          lat: destinations[index + 1].lat, 
-                          lng: destinations[index + 1].lng 
+                      <RouteComponent
+                        origin={{ lat: destination.lat, lng: destination.lng }}
+                        destination={{
+                          lat: destinations[index + 1].lat,
+                          lng: destinations[index + 1].lng
                         }}
                         onRouteCalculated={(routeInfo) => {
                           setRouteDurations(prev => ({
@@ -109,7 +131,7 @@ function Page() {
                     )}
 
                     <AdvancedMarker position={{ lat: destination.lat, lng: destination.lng }}>
-                      <Pin 
+                      <Pin
                         {...getPinColor(index, destinations.length)}
                         glyph={destination.seq.toString()}
                       />
@@ -122,7 +144,7 @@ function Page() {
                     Route {key}: {info.duration} ({info.distance})
                   </div>
                 ))}
-                </Map>
+              </Map>
             </APIProvider>
           </div>
         </div>

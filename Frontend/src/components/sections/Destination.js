@@ -27,14 +27,14 @@ export default function DestinationCard({
     <div className="flex w-full">
       {/* Left column: number + line */}
       <div className="flex flex-col items-center mr-7 shrink-0">
-        <h2 className="text-green-600 font-semibold text-lg mb-2">{number}</h2>
-        <div className="bg-green-500 w-[2px] h-full" />
+        <h2 className="text-green-900 font-semibold text-lg mb-2">{number}</h2>
+        <div className="bg-green-700 w-[2px] h-full" />
       </div>
 
       {/* Main content: stretches to the right */}
-      <div className="flex-1 min-w-0 bg-white my-8 gap-6 mr-1">
+      <div className="flex-1 min-w-0 my-8 gap-6 mr-1">
         {/* Title */}
-        <h2 className="text-xl font-bold text-gray-900 mb-2 truncate">{name}</h2>
+        <h2 className="text-xl font-bold text-green-900 mb-2 truncate">{name}</h2>
 
         {/* Image */}
         <img
@@ -44,7 +44,7 @@ export default function DestinationCard({
         />
 
         {/* Address */}
-        <div className="flex items-start gap-2 mb-3 text-gray-600 text-sm">
+        <div className="flex items-start gap-2 mb-3 text-black text-sm">
           <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
@@ -74,7 +74,7 @@ export default function DestinationCard({
           </div>
 
           {/* Distance */}
-          <div className="flex items-center gap-1 text-gray-600">
+          <div className="flex items-center gap-1 text-gray-700">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -83,7 +83,7 @@ export default function DestinationCard({
           </div>
 
           {/* Duration */}
-          <div className="flex items-center gap-1 text-gray-600">
+          <div className="flex items-center gap-1 text-gray-700">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -92,8 +92,8 @@ export default function DestinationCard({
         </div>
 
         {/* Footer / Description */}
-        <div className="pt-3 border-t border-gray-200">
-          <span className="text-gray-500 text-sm break-words">{description}</span>
+        <div className="pt-3 border-t border-black/20">
+          <span className="text-black text-sm break-words">{description}</span>
         </div>
       </div>
     </div>
